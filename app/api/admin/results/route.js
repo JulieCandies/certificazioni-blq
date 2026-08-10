@@ -6,3 +6,4 @@ export async function GET() {
   results.sort((a, b) => (a.expiryDate || '').localeCompare(b.expiryDate || ''));
   return NextResponse.json({ results });
 }
+export const dynamic = 'force-dynamic';

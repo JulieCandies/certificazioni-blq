@@ -60,3 +60,5 @@ export async function POST(req) {
   await kv.set('test:' + code, test);
   return NextResponse.json({ ok: true, test });
 }
+export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
