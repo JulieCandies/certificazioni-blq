@@ -8,11 +8,9 @@ export async function GET() {
   tests.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
   return NextResponse.json({ tests });
 }
-
 export async function POST(req) {
   const body = await req.json().catch(() => ({}));
   const code = (body.code || '').toUpperCase().trim().replace(/\s+/g, '');
-
   if (!/^[A-Z0-9-]{3,20}$/.test(code)) {
     return NextResponse.json(
       { error: 'Il codice/password del test deve avere 3-20 caratteri: lettere, numeri o trattini.' },
@@ -21,11 +19,9 @@ export async function POST(req) {
   }
   if (!body.title?.trim()) {
     return NextResponse.json({ error: 'Serve un titolo per il test.' }, { status: 400 });
-  }
   const questions = Array.isArray(body.questions) ? body.questions : [];
   if (!questions.length) {
     return NextResponse.json({ error: 'Il test deve avere almeno una domanda.' }, { status: 400 });
-  }
   for (const q of questions) {
     if (!q.text?.trim() || !Array.isArray(q.options) || q.options.length !== 4 || q.options.some((o) => !o?.trim())) {
       return NextResponse.json(
@@ -33,16 +29,10 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-  }
-
   const existing = await kv.get('test:' + code);
   if (existing) {
-    return NextResponse.json(
       { error: `Il codice "${code}" è già usato dal test "${existing.title}".` },
       { status: 409 }
-    );
-  }
-
   const test = {
     code,
     title: body.title.trim(),
@@ -56,9 +46,6 @@ export async function POST(req) {
     })),
     createdAt: new Date().toISOString()
   };
-
   await kv.set('test:' + code, test);
   return NextResponse.json({ ok: true, test });
-}
-export const dynamic = 'force-dynamic';
 export const dynamic = 'force-dynamic';
